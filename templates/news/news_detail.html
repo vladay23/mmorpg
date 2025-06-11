@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ news_item.title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Стили для новости */
+.news-detail {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+}
+.article-title {
+    font-size: 28px;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+.article-meta {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 20px;
+}
+.article-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+.article-content {
+    font-size: 16px;
+    line-height: 1.6;
+}
+.back-link {
+    display: inline-block;
+    margin-top: 20px;
+    font-weight: 600;
+    color: #007bff;
+}
+.back-link:hover {
+    text-decoration: underline;
+}
+/* Добавим стиль для кнопок */
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+    text-decoration: none;
+}
+.btn-primary {
+    background-color: #007bff;
+    color: #fff;
+}
+.btn-danger {
+    background-color: #dc3545;
+    color: #fff;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="news-detail">
+    <!-- Заголовок новости -->
+    <h1 class="article-title">{{ news_item.title }}</h1>
+
+    <!-- Дата и автор -->
+    <div class="article-meta">
+        <span class="date">{{ news_item.published_at|date:"d.m.Y H:i" }}</span>
+        <span class="author">| Автор: {{ news_item.author.get_full_name|default:news_item.author.username }}</span>
+    </div>
+
+    <!-- Изображение новости, если есть -->
+    {% if news_item.image %}
+    <div class="article-image">
+        <img src="{{ news_item.image.url }}" alt="{{ news_item.title }}">
+    </div>
+    {% endif %}
+
+    <!-- Основной контент новости -->
+    <div class="article-content">
+        {{ news_item.content|linebreaks }}
+    </div>
+
+    <!-- Ссылки и кнопки -->
+<div style="margin-top: 20px;">
+    {% if user.is_authenticated %}
+        <!-- Кнопка выхода, если пользователь авторизован -->
+        <a href="{% url 'logout' %}" class="btn btn-danger">Выйти</a>
+    {% else %}
+        <!-- Кнопки входа и регистрации, если пользователь не авторизован -->
+        <a href="{% url 'login' %}" class="btn btn-primary">Войти</a>
+        <a href="{% url 'register' %}" class="btn btn-success">Регистрация</a>
+    {% endif %}
+    <!-- Кнопка редактирования -->
+    <a href="{% url 'news-edit' pk=news_item.pk %}" class="btn btn-primary">Редактировать</a>
+
+    <!-- Ссылка назад к списку -->
+    <a href="{% url 'news-list' %}" class="back-link">Вернуться к списку новостей</a>
+</div>
+{% endblock %}
