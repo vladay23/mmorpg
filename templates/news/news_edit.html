@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Редактировать новость: {{ news_item.title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Стили для страницы редактирования новости */
+.news-edit {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    max-width: 800px;
+    margin: 0 auto 20px auto;
+}
+.news-edit h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+.form-group {
+    margin-bottom: 15px;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+.form-control {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+.form-control[type="file"] {
+    padding: 4px 12px;
+}
+.buttons {
+    margin-top: 20px;
+}
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+.btn-primary {
+    background-color: #007bff;
+    color: #fff;
+}
+.btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+}
+.back-link {
+    display: inline-block;
+    margin-top: 20px;
+    font-weight: 600;
+    color: #007bff;
+}
+.back-link:hover {
+    text-decoration: underline;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="news-edit">
+    <!-- Заголовок страницы -->
+    <h1>Редактировать новость: {{ news_item.title }}</h1>
+
+    <!-- Форма редактирования -->
+    <form method="post" enctype="multipart/form-data">
+        
+        <input type="hidden" name="_method" value="PUT" />
+
+        <!-- Поле заголовка -->
+        <div class="form-group">
+            <label for="{{ form.title.id_for_label }}">Заголовок</label>
+            {{ form.title }}
+            {% if form.title.errors %}
+                <div class="error">{{ form.title.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Поле даты публикации -->
+        <div class="form-group">
+            <label for="{{ form.published_at.id_for_label }}">Дата публикации</label>
+            {{ form.published_at }}
+            {% if form.published_at.errors %}
+                <div class="error">{{ form.published_at.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Поле автора (скрытое, если редактировать не нужно) -->
+        {{ form.author_id.as_hidden }}
+        {% if form.author_id.errors %}
+            <div class="error">{{ form.author_id.errors }}</div>
+        {% endif %}
+
+        <!-- Поле изображения -->
+        <div class="form-group">
+            <label for="{{ form.image.id_for_label }}">Изображение</label>
+            {{ form.image }}
+            {% if news_item.image %}
+                <p>Текущее изображение:</p>
+                <img src="{{ news_item.image.url }}" alt="{{ news_item.title }}" style="max-width:200px; margin-top:10px;">
+            {% endif %}
+            {% if form.image.errors %}
+                <div class="error">{{ form.image.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Основной контент новости -->
+        <div class="form-group">
+            <label for="{{ form.content.id_for_label }}">Контент</label>
+            {{ form.content }}
+            {% if form.content.errors %}
+                <div class="error">{{ form.content.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Кнопки -->
+        <div class="buttons">
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+            <a href="{% url 'news-list' %}" class="btn btn-secondary">Отмена</a>
+        </div>
+    </form>
+</div>
+
+<!-- Блок входа/выхода -->
+<div style="margin-top:20px; text-align:center;">
+    {% if user.is_authenticated %}
+        <!-- Кнопка выхода -->
+        <form method="post" action="{% url 'logout' %}" style="display:inline;">
+           
+            <button type="submit" class="btn btn-danger">Выйти</button>
+        </form>
+    {% else %}
+        <!-- Кнопки входа и регистрации -->
+        <a href="{% url 'login' %}" class="btn btn-primary">Войти</a>
+        <a href="{% url 'register' %}" class="btn btn-secondary">Регистрация</a>
+    {% endif %}
+</div>
+{% endblock %}

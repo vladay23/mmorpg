@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>MMORPGHUB — Новости</title>
+    <style>
+        /* Общие стили с градиентным фоном */
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: linear-gradient(90deg, #8A2BE2, #7B68EE);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Шапка */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Название сайта */
+        .logo {
+            font-size: 2em;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        /* Блок кнопок входа/регистрации */
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .auth-buttons a {
+            padding: 8px 16px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border: 1px solid #fff;
+            border-radius: 4px;
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .auth-buttons a:hover {
+            background-color: #fff;
+            color: #222;
+        }
+
+        /* Основной контент */
+        main {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Заголовок раздела */
+        h1 {
+            font-size: 2em;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        /* Список новостей */
+        .news-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+        }
+
+        /* Карточка новости */
+        .news-item {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+        .news-item:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+
+        /* Изображение новости */
+        .news-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            margin-bottom: 12px;
+        }
+
+        /* Заголовок новости */
+        .news-title {
+            font-size: 24px;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            text-decoration: none;
+        }
+        .news-title:hover {
+            text-decoration: underline;
+            color: #007bff;
+        }
+
+        /* Дата публикации */
+        .news-date {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 12px;
+        }
+
+        /* Краткое содержание или анонс */
+        .news-preview {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #444;
+        }
+
+        /* Адаптивность */
+        @media(max-width: 900px) {
+            .news-list {
+                padding: 0 10px;
+            }
+        }
+
+        /* Футер */
+        footer {
+            background-color: rgba(34, 34, 34, 0.8);
+            padding: 15px;
+            text-align: center;
+            color: #fff;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Шапка -->
+    <header>
+        <div class="logo">MMORPGHUB — Новости</div>
+        <div class="auth-buttons">
+            {% if user.is_authenticated %}
+                <!-- Кнопка выхода -->
+                <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                    
+                    <button type="submit" style="background:none;border:none;padding:0;cursor:pointer; font:inherit; color:inherit;">
+                        Logout
+                    </button>
+                </form>
+            {% else %}
+                <!-- Кнопки входа и регистрации -->
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'register' %}">Register</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <!-- Основной контент -->
+    <main>
+        <h1>Все новости</h1>
+        <div class="news-list">
+            {% for news in news_items %}
+            <div class="news-item">
+                {% if news.image %}
+                <div class="news-image">
+                    <img src="{{ news.image.url }}" alt="{{ news.title }}">
+                </div>
+                {% endif %}
+                <a href="{% url 'news-detail' news.id %}" class="news-title">{{ news.title }}</a>
+                <div class="news-date">{{ news.published_at|date:"d.m.Y" }}</div>
+                <div class="news-preview">{{ news.content|truncatechars:200 }}</div>
+            </div>
+            {% empty %}
+            <p style="text-align:center; width:100%; color:#fff; font-size:1.2em;">Нет новостей для отображения.</p>
+            {% endfor %}
+        </div>
+    </main>
+
+    <!-- Футер -->
+    <footer>
+        © 2025 MMORPGHUB. Все права защищены.
+    </footer>
+</body>

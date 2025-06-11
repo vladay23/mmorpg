@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Создать новость</title>
+    <style>
+        /* Общие стили страницы */
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: linear-gradient(90deg, #8A2BE2, #7B68EE);
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Шапка без кнопок входа/регистрации */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .logo {
+            font-size: 2em;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        /* Контейнер для формы */
+        .form-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Заголовок формы */
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2.2em;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        /* Основная форма */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Обертка для полей */
+        .fields-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        /* Каждая колонка */
+        .column {
+            flex: 1 1 45%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Заголовки внутри колонок */
+        .column h2 {
+            margin-bottom: 10px;
+            font-size: 1.5em;
+            color: #fff;
+            border-bottom: 2px solid #fff;
+            padding-bottom: 5px;
+        }
+
+        /* Поля для заполнения */
+        .field {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+
+        /* Сделать поля немного прозрачнее */
+        input[type="text"],
+        input[type="datetime-local"],
+        textarea,
+        input[type="file"] {
+            padding: 10px;
+            border: 1px solid #fff;
+            border-radius: 4px;
+            background-color: rgba(255, 255, 255, 0.3);
+            color: #000;
+            font-size: 1em;
+        }
+
+        /* Ошибки */
+        .errors {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 2px;
+        }
+
+        /* Кнопка */
+        button {
+            align-self: center;
+            padding: 10px 20px;
+            margin-top: 20px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="logo">MMORPGHUB — Новости</div>
+</header>
+
+<h1>Создать новость</h1>
+
+<div class="form-container">
+<form method="post" enctype="multipart/form-data">
+
+
+    {{ form.non_field_errors }}
+
+    <div class="fields-group">
+        <!-- Левая колонка: автор и заголовок -->
+        <div class="column">
+            <h2>Основное</h2>
+            <div class="field">
+                <label for="{{ form.author_id.id_for_label }}">ID автора:</label>
+                {{ form.author_id.errors }}
+                {{ form.author_id }}
+            </div>
+            <div class="field">
+                <label for="{{ form.title.id_for_label }}">Заголовок:</label>
+                {{ form.title.errors }}
+                {{ form.title }}
+            </div>
+        </div>
+
+        <!-- Правая колонка: содержание, дата, изображение -->
+        <div class="column">
+            <h2>Контент</h2>
+            <div class="field">
+                <label for="{{ form.content.id_for_label }}">Содержание:</label>
+                {{ form.content.errors }}
+                {{ form.content }}
+            </div>
+            <h2>Дата публикации</h2>
+            <div class="field">
+                <label for="{{ form.published_at.id_for_label }}">Дата и время:</label>
+                {{ form.published_at.errors }}
+                {{ form.published_at }}
+            </div>
+            <h2>Изображение</h2>
+            <div class="field">
+                <label for="{{ form.image.id_for_label }}">Изображение (необязательно):</label>
+                {{ form.image.errors }}
+                {{ form.image }}
+            </div>
+        </div>
+    </div>
+
+    <div style="text-align: center;">
+        <button type="submit">Создать</button>
+    </div>
+</form>
+
+<!-- Добавьте здесь блок с кнопками входа/выхода -->
+{% if user.is_authenticated %}
+    <!-- Кнопка выхода -->
+    <form method="post" action="{% url 'logout' %}" style="display:inline-block; margin-top: 10px;">
+        {% csrf_token %}
+        <button type="submit">Выйти</button>
+    </form>
+{% else %}
+    <!-- Кнопки входа и регистрации -->
+    <div style="margin-top: 10px; text-align: center;">
+        <a href="{% url 'login' %}">Войти</a> | <a href="{% url 'register' %}">Регистрация</a>
+    </div>
+{% endif %}
+</div>
+</body>
+</html>
